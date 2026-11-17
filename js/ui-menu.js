@@ -77,7 +77,7 @@
     if (k === 'fab') { await Store.setPref('fab', Store.prefs.fab === false); return; }
     if (k === 'hidden') { App.show('data'); return DataUI.openHidden(); }
     if (k === 'help') return DataUI.openHelp();
-    if (k === 'about') return U.dialog("Log Master", '<p>Version 1.1. Offline key reference and in-stock lookup.</p>', [{ label: 'Close', value: true }]);
+    if (k === 'about') return U.dialog("Log Master", '<p>Version 1.2. Offline key reference and in-stock lookup.</p>', [{ label: 'Close', value: true }]);
   }
   function init() {
     $('#mBtn').onclick = e => { e.stopPropagation(); open = (open === 'phone') ? '' : 'phone'; if (!open) sub = ''; render(); };
