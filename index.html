@@ -1,0 +1,42 @@
+<!doctype html>
+<!-- index.html (Log Master v1.0) — page layout only. Logic in js/, look in styles.css. Rebranded copy of the Pinky's PWA; do not publish over Pinky's. -->
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Log Master</title><meta name="apple-mobile-web-app-title" content="Log Master"><meta name="theme-color" content="#000000"><link rel="manifest" href="manifest.json"><link rel="icon" href="favicon.ico"><link rel="icon" type="image/png" sizes="192x192" href="icon-192.png"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="stylesheet" href="styles.css"></head>
+<body class="compact">
+<header><div class="brand"><img src="icon.svg" alt="" width="28" height="28"><h1>Log Master</h1></div>
+<button id="mBtn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="menuRoot">☰</button>
+<nav><button id="btn-reference" class="active">Reference</button><button id="btn-data">Data</button></nav>
+<div id="menuRoot"></div></header>
+<main>
+<section id="tab-reference">
+  <div class="searchbar"><input id="q" type="search" placeholder="Search: 2016 jeep compass" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Search"><button id="qClear" aria-label="Clear search" hidden>✕</button></div>
+  <div class="toolbar"><button id="refreshBtn" type="button" title="Clear search and filters, show the full sheet">⟳ Refresh</button><span id="fChips" hidden></span><span class="grow"></span><span id="count" class="note"></span></div>
+  <div id="selBar" hidden></div>
+  <div id="sheet"></div>
+</section>
+<section id="tab-data" hidden>
+  <div class="row csvact"><label class="filebtn primary" for="impFile" id="impBtn">Import new CSV</label><button type="button" id="emptyBtn" title="Unload the catalog: like importing, but loads nothing">Empty</button></div>
+  <div id="fileInfo"></div>
+  <div class="row"><button type="button" id="expCat" hidden>Export catalog</button></div>
+</section>
+</main>
+<button id="topFab" aria-label="Back to top" hidden>▲</button>
+<div id="cardWrap" hidden><div id="cardBack"></div><div id="card" role="dialog" aria-label="Details"><div class="grab"></div><button id="cX" aria-label="Close">✕ Close</button><div id="cardBody"></div><div id="cardFoot"></div></div></div>
+<div id="printArea"></div>
+<div id="toast" role="status"></div>
+<div id="undoBar" hidden><span id="undoMsg"></span><button id="undoBtn" type="button">Undo</button></div>
+<dialog id="dlg"><h3 id="dlgTitle"></h3><div id="dlgBody"></div><div id="dlgFoot"></div></dialog>
+<div class="help" id="helpText" hidden>
+  <p><b>Log Master</b> (v1.0). Offline key reference and in-stock lookup.</p>
+  <p>Type year, make or model in the search box (a year finds ranges like 2014-2018). <b>Filters</b> opens chips; tap Done to close.</p>
+  <p>On a computer, <b>File / Edit / View / Help</b> is at the top. On a phone, <b>☰</b> opens the same menu. The Reference screen stays search, Filters and the sheet.</p>
+  <p>Tick rows to Print, mark in stock, Hide or Export just those. <b>Edit → + Add item</b> adds your own row (Source: My item). Hide is reversible from <b>View → Hidden rows</b> (or Undo). Supplier rows are only hidden, never deleted; your items can be deleted from the card.</p>
+  <p>⚙ at the end of the header picks columns. Print and Export use what is on screen (or the selection).</p>
+  <p>Tap a row for the details card. <b>Amber dot</b> = needs review; the card says why. Edit or Confirmed ✓ saves into My Fixes. Export My Fixes and send the file so it can be combined into the next CSV update.</p>
+  <p>Data stays on this phone and works offline. Blank = the supplier did not show it.</p></div>
+<input type="file" id="impFile" accept=".csv,text/csv" class="offscreen" aria-label="Import new CSV">
+<script src="js/util.js"></script><script src="js/csv.js"></script><script src="js/search.js"></script><script src="js/data.js"></script><script src="js/onhand.js"></script>
+<script src="js/lookup.js"></script><script src="js/stock.js"></script><script src="js/db.js"></script><script src="js/store.js"></script><script src="js/reasons.js"></script><script src="js/fixes.js"></script>
+<script src="js/users.js"></script><script src="js/hidden.js"></script>
+<script src="js/catalog-file.js"></script><script src="js/pdf.js"></script><script src="js/ui-sheet.js"></script><script src="js/ui-card.js"></script><script src="js/ui-fixes.js"></script><script src="js/ui-data.js"></script><script src="js/ui-menu.js"></script><script src="js/app.js"></script>
+</body></html>
