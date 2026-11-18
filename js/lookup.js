@@ -22,7 +22,7 @@
     products.forEach(p => { const k = refOf(p.rows[0]); if (!refP.has(k)) refP.set(k, []); refP.get(k).push(p); });
     st.inventory.forEach(it => { const seen = new Set(), add = p => { if (seen.has(p.key)) return; seen.add(p.key); if (!links.has(p.key)) links.set(p.key, []); links.get(p.key).push(it); };
       if (it.ref) (refP.get(it.ref) || []).forEach(add); else V.linkTokens(it).forEach(t => (tokProducts.get(t) || []).forEach(add)); });
-    const cat = S.buildIndex(cat0, { get: r => ({ make: r.make, model: r.model, years: r.years, text: [r.product, r.pn, r.item, r.fcc, r.chip, r.compat, r.notes, r.src, r.supplier, r.oem, r.strattec, r.keyType].join(' ') }) });
+    const cat = S.buildIndex(cat0, { get: r => ({ make: r.make, model: r.model, years: r.years, text: [r.product, r.pn, r.item, r.fcc, r.chip, r.compat, r.notes, r.src, r.supplier, r.oem, r.strattec, r.keyType].concat(r.extra ? Object.values(r.extra) : []).join(' ') }) }); // v1.3: + the file's own columns
     const veh = S.buildIndex(st.vehicles, { get: r => ({ make: r.make, model: r.model, years: r.years, text: [r.chip, r.strattec, r.notes].join(' ') }) });
     const invRows = [];
     st.inventory.forEach(it => { const text = [it.pn, it.name, it.links, it.notes, it.type].join(' ');

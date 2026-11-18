@@ -30,7 +30,7 @@
   async function purgeCustomCols() {
     let n = 0;
     for (const k of ['customCols', 'customVals']) if ((await DB.getMeta(k)) !== undefined) { await DB.delMeta(k); n++; }
-    if (await Store.cleanCols(new Set(SheetUI.COLS.map(c => c.key)))) n++;
+    if (await Store.cleanCols(new Set(SheetUI.allCols().map(c => c.key)))) n++; // v1.3: the loaded file's own columns ('x:' ids) are known too
     // (no localStorage: the app never stored anything there, and the github.io origin is shared with other sites)
     document.body.dataset.purged = n;
   }

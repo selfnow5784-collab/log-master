@@ -6,7 +6,9 @@
    Shows
    the review reason in plain words, In-stock toggle, Edit, Hide, and (for your items)
    Delete. Supplier edits go to My Fixes; your items are saved on the row itself. Swipe down / tap
-   outside / Close = back to the sheet. */
+   outside / Close = back to the sheet.
+   Log Master v1.3: the loaded file's own columns (r.extra) are listed after the built-in lines, labelled with their header
+   (blank ones hidden, http(s) values clickable). A row with no Year/Make/Model gets no empty vehicle heading. */
 (function (G) {
   'use strict';
   const { $, esc } = U;
@@ -60,9 +62,12 @@
     const q = Stock.qty(r), conf = Fixes.isConfirmed(r), plain = r.review ? Reasons.plain(r.review) : [], mine = Users.isMine(r);
     const head = !mine && ['years', 'make', 'model', 'product'].some(k => Fixes.edited(r, k)) ? `<p class="note fixedtxt">Edited by you: ${['years', 'make', 'model', 'product'].filter(k => Fixes.edited(r, k)).map(k => esc(Fixes.LABELS[k]) + ' (was ' + esc(Fixes.edited(r, k).orig || 'blank') + ')').join(', ')}</p>` : '';
     const fields = mine ? SHOW.filter(([k]) => !['item', 'compatFcc'].includes(k)) : SHOW;
-    $('#cardBody').innerHTML = `<h2>${esc([r.years, r.make, r.model].filter(Boolean).join(' ') || (mine ? 'My item' : ''))}</h2><p class="pname">${r.product ? esc(r.product) : '<span class="blank">(no product name given)</span>'}${mine ? ' <span class="minebadge">My item</span>' : ''}</p>${head}
+    const title = [r.years, r.make, r.model].filter(Boolean).join(' ') || (mine ? 'My item' : '');
+    const own = mine ? '' : CatalogFile.fileCols().map(h => { const v = r.extra && r.extra[h]; return v && String(v).trim() ? (/^https?:\/\//i.test(String(v).trim()) ? linkRow(h, v) : sourceRow(h, v).replace('kv src', 'kv xcol')) : ''; }).join('');
+    $('#cardBody').innerHTML = `${title || CatalogFile.hasVehicle() ? `<h2>${esc(title)}</h2>` : ''}<p class="pname">${r.product ? esc(r.product) : '<span class="blank">(no product name given)</span>'}${mine ? ' <span class="minebadge">My item</span>' : ''}</p>${head}
       ${r.review ? `<div class="revbox${conf ? ' ok' : ''}"><b>${conf ? 'Confirmed ✓ by you' : 'Needs review'}:</b> ${esc(plain.join(' · '))}<details><summary>Details</summary><p>${esc(r.review)}</p></details></div>` : ''}
       ${fields.map(([k, l]) => { const v = shown(r, k); return fieldRow(r, k, l, v) + (k === 'oem' && r.oem ? sourceRow('OEM source', r.oemSource) : '') + (k === 'strattec' && v ? sourceRow('Strattec source', r.strattecSource) : ''); }).join('')}
+      ${own}
       ${mine ? '' : linkRow('Link', r.productUrl || r.url || '')}`;
     $('#cardFoot').innerHTML = `<label class="stk big"><input type="checkbox" id="cStock" ${q > 0 ? 'checked' : ''}> In stock${q > 1 ? ' (' + q + ')' : ''}</label>
       <button id="cEdit">Edit</button>${!mine && r.review ? `<button id="cConf" class="${conf ? 'ok' : 'primary'}">${conf ? 'Confirmed ✓ (undo)' : 'Confirmed ✓'}</button>` : ''}

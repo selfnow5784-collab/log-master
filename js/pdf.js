@@ -63,7 +63,7 @@
     const cols = SheetUI.visCols(), rs = SheetUI.wantRows(), q = (document.getElementById('q') || {}).value || '', f = SheetUI.chipsSummary();
     const meta = `Shared ${new Date().toLocaleString()} · Search: ${q.trim() || '(none)'} · Filters: ${f.join(', ') || '(none)'} · ${rs.length.toLocaleString()} rows${SheetUI.state.sel.size ? ' (selected)' : ''}`;
     return { title: "Log Master", meta, headers: cols.map(c => c.label),
-      rows: rs.map(r => cols.map(c => (c.key === 'years' && Fixes.needsReview(r) ? '\u2022 ' : '') + SheetUI.displayVal(r, c))) };
+      rows: rs.map(r => cols.map(c => (c === cols[0] && Fixes.needsReview(r) ? '\u2022 ' : '') + SheetUI.displayVal(r, c))) };
   }
   // send it: Web Share with the PDF file, else download. Runs synchronously up to navigator.share so the tap still counts.
   function share() {

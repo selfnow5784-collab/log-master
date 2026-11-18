@@ -3,14 +3,18 @@
    (Source = "My item") appear with the rest.
    v3.9-7: the Filters and Columns choices live in the menu as drop-downs (filtersHtml / colsHtml, drawn by MenuUI).
    Applied filters stay on screen as chips next to ⟳ Refresh (tap a chip to drop it). Refresh = clear search, filters
-   and sort, back to the full sheet. The ⚙ header button is gone (Columns is in the menu). */
+   and sort, back to the full sheet. The ⚙ header button is gone (Columns is in the menu).
+   Log Master v1.3: the loaded file's own columns (CatalogFile.fileCols, ids 'x:' + header) are listed in Columns after the
+   built-in ones and can be shown, sorted, printed and exported like them. For a file without Year(s)/Make/Model columns those
+   three are not shown, Columns only lists built-in columns that have data in the file, the default view is In stock, Type and
+   the first few file columns with data, and the Needs review dot sits in the first column. Auto files look exactly as before. */
 (function (G) {
   'use strict';
   const { $, esc } = U;
   const firstYear = r => { const sp = Search.yearSpans(r.years); return sp.length ? sp[0][0] : 0; };
   const stockQ = r => Stock.qty(r);
   const COLS = [
-    { key: 'years', label: 'Year(s)', fixed: true, sort: firstYear }, { key: 'make', label: 'Make', fixed: true }, { key: 'model', label: 'Model', fixed: true },
+    { key: 'years', label: 'Year(s)', fixed: true, veh: true, sort: firstYear }, { key: 'make', label: 'Make', fixed: true, veh: true }, { key: 'model', label: 'Model', fixed: true, veh: true },
     { key: 'product', label: 'Product name', fixed: true }, { key: 'stock', label: 'In stock', on: true, sort: stockQ },
     { key: 'type', label: 'Type', on: true }, { key: 'buttons', label: 'Buttons', on: true }, { key: 'fcc', label: 'FCC ID', on: true }, { key: 'chip', label: 'Chip', on: true },
     { key: 'blade', label: 'Blade', on: true }, { key: 'oem', label: 'OEM part #' }, { key: 'freq', label: 'Frequency' }, { key: 'pn', label: 'Part #' },
@@ -19,9 +23,18 @@
   const PAGE = 100;
   const st = { types: new Set(), inStock: false, review: false, oem: false, sortKey: null, dir: 1, shown: PAGE, open: false, sel: new Set() };
   let lastRows = [];
+  // v1.3: built-in columns + the loaded file's own columns
+  const allCols = () => COLS.concat(CatalogFile.fileCols().map(h => ({ key: 'x:' + h, label: h, file: true, get: r => (r.extra && r.extra[h]) || '' })));
+  const genFile = () => CatalogFile.hasVehicle() ? null : CatalogFile.loadedFile();
+  // columns on offer: all of them for auto files; for a file without Year/Make/Model, only what that file can fill
+  function listCols() {
+    const f = genFile(); if (!f) return allCols();
+    const used = new Set(f.used || []);
+    return allCols().filter(c => !c.veh && (c.fixed || c.file || c.key === 'stock' || used.has(c.key)));
+  }
   function visCols() {
-    const sel = Store.prefs.cols;
-    return COLS.filter(c => c.fixed || (Array.isArray(sel) ? sel.includes(c.key) : c.on)); // unknown ids in sel are ignored
+    const sel = Store.prefs.cols, f = genFile(), def = c => f ? c.key === 'stock' || c.key === 'type' || (c.file && (f.defCols || []).includes(c.label)) : c.on;
+    return listCols().filter(c => c.fixed || (Array.isArray(sel) ? sel.includes(c.key) : def(c))); // unknown ids in sel are ignored
   }
   const typeLabel = t => t ? t.charAt(0).toUpperCase() + t.slice(1) : 'No type';
   function typeList() { const m = new Map(); Store.st.catalog.forEach(r => { if (Hidden.isHidden(r.id)) return; m.set(r.type || '', (m.get(r.type || '') || 0) + 1); }); return [...m].sort((a, b) => b[1] - a[1]).map(x => x[0]); }
@@ -33,10 +46,10 @@
     if (st.inStock) out = out.filter(r => stockQ(r) > 0);
     if (st.review) out = out.filter(Fixes.needsReview);
     if (st.oem) out = out.filter(r => r.oem);
-    const sc = st.sortKey && COLS.find(x => x.key === st.sortKey);
+    const sc = st.sortKey && allCols().find(x => x.key === st.sortKey);
     if (st.sortKey && !sc) { st.sortKey = null; st.dir = 1; } // v3.9-10: a sort on a column that no longer exists is dropped (it used to throw and break the menu)
     if (sc) {
-      const c = sc, g = c.sort || (r => r[c.key] || ''), d = st.dir;
+      const c = sc, g = c.sort || c.get || (r => r[c.key] || ''), d = st.dir;
       out = out.slice().sort((a, b) => { const x = g(a), y = g(b); return d * (typeof x === 'number' ? x - y : String(x).localeCompare(String(y), undefined, { numeric: true })); }); }
     return out;
   }
@@ -61,11 +74,11 @@
   // Columns drop-down (in the menu): tick = shown right away.
   function colsHtml() {
     const sel = new Set(visCols().map(c => c.key));
-    return `<div class="mpanel cpanel"><p class="note">Year, Make, Model and Product name always show.</p>` +
-      COLS.filter(c => !c.fixed).map(c => `<label class="inline"><input type="checkbox" class="colcb" value="${c.key}" ${sel.has(c.key) ? 'checked' : ''}> ${esc(c.label)}</label>`).join('') + '</div>';
+    return `<div class="mpanel cpanel"><p class="note">${CatalogFile.hasVehicle() ? 'Year, Make, Model and Product name always show.' : 'Product name always shows.'}</p>` +
+      listCols().filter(c => !c.fixed).map(c => `<label class="inline"><input type="checkbox" class="colcb" value="${esc(c.key)}" ${sel.has(c.key) ? 'checked' : ''}> ${esc(c.label)}</label>`).join('') + '</div>';
   }
   async function setCol(key, on) {
-    if (!COLS.some(c => c.key === key && !c.fixed)) return;
+    if (!allCols().some(c => c.key === key && !c.fixed)) return;
     const cur = visCols().map(c => c.key).filter(k => !COLS.find(c => c.key === k && c.fixed));
     const next = on ? (cur.includes(key) ? cur : cur.concat(key)) : cur.filter(k => k !== key);
     await Store.setPref('cols', next); render();
@@ -78,6 +91,7 @@
   const cellVal = (r, c) => {
     if (c.key === 'stock') return '';
     if (c.key === 'productUrl') return linkHtml(r.productUrl || r.url || '');
+    if (c.file) { const v = c.get(r); return /^https?:\/\//i.test(v.trim()) ? linkHtml(v) : esc(v); }
     return esc(r[c.key] || '');
   };
   function renderSelBar() {
@@ -90,14 +104,14 @@
     const n = lastRows.length, slice = lastRows.slice(0, st.shown);
     const allOn = n > 0 && lastRows.every(r => st.sel.has(r.id)), some = lastRows.some(r => st.sel.has(r.id));
     const th = `<th class="c-sel" title="Select all visible"><input type="checkbox" id="selAll" aria-label="Select all visible" ${allOn ? 'checked' : ''}></th>` +
-      cols.map(c => `<th data-sort="${c.key}" class="c-${c.key}${st.sortKey === c.key ? (st.dir > 0 ? ' asc' : ' desc') : ''}">${esc(c.label)}</th>`).join('');
+      cols.map(c => `<th data-sort="${esc(c.key)}" class="${c.file ? 'c-x' : 'c-' + c.key}${st.sortKey === c.key ? (st.dir > 0 ? ' asc' : ' desc') : ''}">${esc(c.label)}</th>`).join('');
     const body = slice.map(r => {
       const rev = Fixes.needsReview(r), mine = Users.isMine(r), on = st.sel.has(r.id);
       const cls = [rev ? 'rev' : '', mine ? 'mine' : '', on ? 'picked' : ''].filter(Boolean).join(' ');
       return `<tr data-id="${esc(r.id)}"${cls ? ` class="${cls}"` : ''}>` +
         `<td class="c-sel"><input type="checkbox" data-sel="${esc(r.id)}" ${on ? 'checked' : ''} aria-label="Select row"></td>` +
         cols.map(c => c.key === 'stock' ? Stock.cell(r, stockQ(r))
-          : `<td class="c-${c.key}${Fixes.edited(r, c.key) ? ' fixed' : ''}">${c.key === 'years' && rev ? '<span class="dot" title="Needs review"></span>' : ''}${cellVal(r, c)}</td>`).join('') +
+          : `<td class="${c.file ? 'c-x' : 'c-' + c.key}${Fixes.edited(r, c.key) ? ' fixed' : ''}">${c === cols[0] && rev ? '<span class="dot" title="Needs review"></span>' : ''}${cellVal(r, c)}</td>`).join('') +
         '</tr>';
     }).join('');
     $('#count').textContent = n.toLocaleString() + (n === 1 ? ' row' : ' rows');
@@ -110,6 +124,7 @@
   const refresh = () => { st.shown = PAGE; render(); };
   function displayVal(r, c) {
     if (c.key === 'stock') return stockQ(r) > 0 ? 'Yes' + (stockQ(r) > 1 ? ' (' + stockQ(r) + ')' : '') : 'No';
+    if (c.get) return c.get(r);
     return r[c.key] || '';
   }
   const selectedRows = () => lastRows.filter(r => st.sel.has(r.id));
@@ -118,7 +133,7 @@
     const cols = visCols(), rs = list || wantRows(), q = $('#q').value.trim(), f = chipsSummary();
     const doIt = () => {
       $('#printArea').innerHTML = `<h1>Log Master</h1><p class="pmeta">Printed ${esc(new Date().toLocaleString())} · Search: ${esc(q || '(none)')} · Filters: ${esc(f.join(', ') || '(none)')} · ${rs.length.toLocaleString()} rows</p>
-        <table><thead><tr>${cols.map(c => `<th>${esc(c.label)}</th>`).join('')}</tr></thead><tbody>${rs.map(r => `<tr>${cols.map(c => `<td>${c.key === 'years' && Fixes.needsReview(r) ? '• ' : ''}${esc(displayVal(r, c))}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+        <table><thead><tr>${cols.map(c => `<th>${esc(c.label)}</th>`).join('')}</tr></thead><tbody>${rs.map(r => `<tr>${cols.map(c => `<td>${c === cols[0] && Fixes.needsReview(r) ? '• ' : ''}${esc(displayVal(r, c))}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
       document.body.dataset.printed = rs.length; window.print(); };
     if (rs.length > 1000) return U.dialog('Print ' + rs.length.toLocaleString() + ' rows?', '<p>That is a lot of pages. Search or filter first to print less.</p>', [{ label: 'Cancel', value: false }, { label: 'Print anyway', value: true }]).then(ok => ok && doIt());
     doIt();
@@ -178,7 +193,7 @@
     $('#sheet').addEventListener('click', e => {
       const t = e.target;
       if (t.closest('#more')) { st.shown += PAGE; render(); return; }
-      const h = t.closest('th[data-sort]'); if (h && COLS.some(c => c.key === h.dataset.sort)) { const k = h.dataset.sort; if (st.sortKey === k) st.dir = -st.dir; else { st.sortKey = k; st.dir = 1; } refresh(); return; }
+      const h = t.closest('th[data-sort]'); if (h && allCols().some(c => c.key === h.dataset.sort)) { const k = h.dataset.sort; if (st.sortKey === k) st.dir = -st.dir; else { st.sortKey = k; st.dir = 1; } refresh(); return; }
       if (t.closest('a') || t.closest('.stk') || t.closest('.c-sel')) return;
       const tr = t.closest('tr[data-id]'); if (tr) { const r = Store.byId.catalog.get(tr.dataset.id); if (r) Card.open(r); }
     });
@@ -202,5 +217,5 @@
     document.addEventListener('change', e => { const t = e.target; if (t.classList && t.classList.contains('colcb') && t.closest('#menuRoot')) setCol(t.value, t.checked); });
     renderFilters();
   }
-  G.SheetUI = { init, render, refresh, renderFilters, filtersHtml, colsHtml, setCol, resetView, clearFilters, nFilters, chipsSummary, displayVal, rows: () => lastRows, COLS, state: st, printView, exportCsv, selectAll, clearSel, hideSelected, markStock, selectedRows, wantRows, promptAdd, visCols };
+  G.SheetUI = { init, render, refresh, renderFilters, filtersHtml, colsHtml, setCol, resetView, clearFilters, nFilters, chipsSummary, displayVal, rows: () => lastRows, COLS, allCols, listCols, state: st, printView, exportCsv, selectAll, clearSel, hideSelected, markStock, selectedRows, wantRows, promptAdd, visCols };
 })(window);

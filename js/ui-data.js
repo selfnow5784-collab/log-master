@@ -1,4 +1,4 @@
-/* ui-data.js (v3.9-10) — Data tab = one catalog file, like one tape in a player:
+/* ui-data.js (v3.9-10; Log Master v1.3: any catalog with an item-name column goes to the one-list import, Year/Make/Model optional) — Data tab = one catalog file, like one tape in a player:
    Import new CSV, a box with the loaded file, and its basic info (rows, month/year the data was pulled, sources, rows still
    marked Needs review). Export catalog. v3.9-9: Empty (beside Import) = the same replace flow, but loads nothing.
    Replacing the file offers to save a copy of the current catalog first (with your changes), and only asks about My Fixes
@@ -9,7 +9,7 @@
   const read = f => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = () => rej(r.error); r.readAsText(f); });
   async function importFile(file, kind) {
     const parsed = CSV.parse(await read(file));
-    if (CatalogFile.isClean(parsed.headers)) return importCatalog(file.name, parsed);
+    if (CatalogFile.shape(parsed.headers)) return importCatalog(file.name, parsed); // v1.3: any catalog with an item-name column (Year/Make/Model optional)
     kind = kind === 'auto' || !kind ? Data.detectKind(parsed.headers) : kind;
     if (!kind) kind = await U.dialog('What is this file?', `<p>${esc(file.name)}: columns ${esc(parsed.headers.join(', '))}</p>`, [{ label: 'Inventory (in stock)', value: 'inventory' }, { label: 'Reference catalog', value: 'catalog' }, { label: 'Vehicle ref', value: 'vehicles' }, { label: 'Cancel', value: null }]);
     if (!kind) return;
@@ -112,7 +112,7 @@
     const list = Hidden.list();
     if (!list.length) return '<p class="note">No hidden rows.</p>';
     return `<p class="note">${list.length.toLocaleString()} hidden. Restore puts a row back on the sheet.</p><ul class="hidlist">` +
-      list.map(x => { const r = x.row, title = r ? [r.years, r.make, r.model].filter(Boolean).join(' ') : '(not in current list)', sub = r ? (r.product || '') : '';
+      list.map(x => { const r = x.row, veh = r ? [r.years, r.make, r.model].filter(Boolean).join(' ') : '', title = r ? veh || r.product || '' : '(not in current list)', sub = r && veh ? (r.product || '') : ''; // v1.3: no vehicle -> the item name
         return `<li><div><b>${esc(title)}</b>${sub ? `<span>${esc(sub)}</span>` : ''}</div><button type="button" data-rest="${esc(x.id)}">Restore</button></li>`;
       }).join('') + '</ul>';
   }
