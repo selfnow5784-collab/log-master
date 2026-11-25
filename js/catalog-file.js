@@ -34,6 +34,9 @@
   // other catalog, or null (not a catalog: the old Import preview / "What is this file?" path decides)
   function shape(headers) {
     const h = (headers || []).filter(Boolean);
+    // v1.4: a Year(s),Make,Model,Product_Name,id file that also has columns the app has no field for (Size, Material …, e.g. the
+    // generic plumbing / HVAC / electrical lists) is read as a generic file so those columns are kept; plain auto files are unchanged
+    if (isClean(h) && h.some(x => !KNOWN.has(x))) return { idCol: 'id', nameCol: 'Product_Name' };
     if (isClean(h)) return { auto: true, idCol: 'id', nameCol: 'Product_Name' };
     if (h.some(x => ['mytotalqty', 'facilityqty'].includes(nh(x)))) return null; // an in-stock (inventory) export
     const idCol = findCol(h, ID_AL), nameCol = findCol(h, NAME_AL, idCol);
@@ -113,7 +116,7 @@
     const headers = parsed.headers.filter(Boolean), P = { name, rows: uniq, headers, meta: parsed.meta || {}, pulled: pulledOf(uniq, parsed.meta),
       marked: uniq.filter(r => r.review).length };
     if (!sh.auto) {
-      P.shape = { idCol: sh.idCol, nameCol: sh.nameCol, veh: VEH.some(h => headers.includes(h)),
+      P.shape = { idCol: sh.idCol, nameCol: sh.nameCol, veh: VEH.some(h => headers.includes(h) && parsed.data.some(x => String(x[h] || '').trim())), // v1.4: all-blank Year/Make/Model = no vehicle columns
         used: FIELDS.filter(k => k !== 'extra' && k !== 'qtyRaw' && uniq.some(r => r[k] && String(r[k]).trim())) };
       const real = v => { v = String(v || '').trim(); return v && !/^(nf|n\/a|na|none|-)$/i.test(v); };
       P.shape.defCols = fileColsOf(Object.assign({ headers }, P.shape)).filter(h => uniq.some(r => r.extra && real(r.extra[h]))).slice(0, 4);

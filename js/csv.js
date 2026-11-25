@@ -50,7 +50,8 @@
     }
     if (!rows.length) return { headers: [], data: [], meta };
     const headers = rows[0].map(h => h.trim());
-    const data = rows.slice(1).map(r => {
+    // v1.4: '# …' comment lines after the header are skipped too (never become data rows); '#10 screw' style values are kept
+    const data = rows.slice(1).filter(r => !/^\s*#(\s|$)/.test(String(r[0] || ''))).map(r => {
       const o = {};
       headers.forEach((h, idx) => { if (h) o[h] = r[idx] !== undefined ? r[idx] : ''; });
       return o;
