@@ -11,7 +11,7 @@
    - Export writes the loaded file's own columns back (with your applied changes, and Reason blank on rows you Confirmed ✓).
    Stock links by Source|Item #|Part # (Stock.ref) exactly as before (PN and Source come from Notes first).
    Buttons = the Buttons column, else only a count written in the product title ("4-Btn", "3 Button"); never guessed.
-   Log Master v1.3 — any CSV columns (the CSV dictates the columns):
+   v1.3 — any CSV columns (the CSV dictates the columns):
    - A file with an id column (id / ID / SKU / Item # …) and an item-name column (Product_Name / Name / Product / Item /
      Description …) imports as a catalog; Year(s)/Make/Model are optional. With a name column but no id column (and nothing
      else the app recognises) ids are made from the name. Auto files (Year(s),Make,Model,Product_Name,id) work exactly as before.

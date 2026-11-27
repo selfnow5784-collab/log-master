@@ -1,4 +1,4 @@
-/* styles.css (Log Master v1.0) — black/white with teal accents. body.light = Light mode; body.alt = Alternating white/gray (UI stays dark,
+/* styles.css — black/white with teal accents. body.light = Light mode; body.alt = Alternating white/gray (UI stays dark,
    only the chart gets white/gray rows with black text); body.altdark = Alternating black/gray rows with white text. body.compact / body.big = row size. @media print = clean table. */
 :root { --teal: #00b3a4; --bg: #000; --fg: #fff; --card: #141414; --line: #3a3a3a; --muted: #bbb; --ok: #1db954; --bad: #e0182d; --amber: #ffb000; --hd: #262626; --fix: #0a3a36; }
 /* sheet colours follow the body theme; set on body (not :root) so body.light's --bg/--fg reach them (v3.9-6 Light left the sheet black) */

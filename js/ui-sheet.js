@@ -4,7 +4,7 @@
    v3.9-7: the Filters and Columns choices live in the menu as drop-downs (filtersHtml / colsHtml, drawn by MenuUI).
    Applied filters stay on screen as chips next to ⟳ Refresh (tap a chip to drop it). Refresh = clear search, filters
    and sort, back to the full sheet. The ⚙ header button is gone (Columns is in the menu).
-   Log Master v1.3: the loaded file's own columns (CatalogFile.fileCols, ids 'x:' + header) are listed in Columns after the
+   v1.3: the loaded file's own columns (CatalogFile.fileCols, ids 'x:' + header) are listed in Columns after the
    built-in ones and can be shown, sorted, printed and exported like them. For a file without Year(s)/Make/Model columns those
    three are not shown, Columns only lists built-in columns that have data in the file, the default view is In stock, Type and
    the first few file columns with data, and the Needs review dot sits in the first column. Auto files look exactly as before. */

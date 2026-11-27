@@ -1,4 +1,4 @@
-/* ui-data.js (v3.9-10; Log Master v1.3: any catalog with an item-name column goes to the one-list import, Year/Make/Model optional) — Data tab = one catalog file, like one tape in a player:
+/* ui-data.js (v3.9-10: any catalog with an item-name column goes to the one-list import, Year/Make/Model optional) — Data tab = one catalog file, like one tape in a player:
    Import new CSV, a box with the loaded file, and its basic info (rows, month/year the data was pulled, sources, rows still
    marked Needs review). Export catalog. v3.9-9: Empty (beside Import) = the same replace flow, but loads nothing.
    Replacing the file offers to save a copy of the current catalog first (with your changes), and only asks about My Fixes

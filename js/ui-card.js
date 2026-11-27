@@ -7,7 +7,7 @@
    the review reason in plain words, In-stock toggle, Edit, Hide, and (for your items)
    Delete. Supplier edits go to My Fixes; your items are saved on the row itself. Swipe down / tap
    outside / Close = back to the sheet.
-   Log Master v1.3: the loaded file's own columns (r.extra) are listed after the built-in lines, labelled with their header
+   v1.3: the loaded file's own columns (r.extra) are listed after the built-in lines, labelled with their header
    (blank ones hidden, http(s) values clickable). A row with no Year/Make/Model gets no empty vehicle heading. */
 (function (G) {
   'use strict';
