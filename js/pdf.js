@@ -49,7 +49,7 @@
       objs[p] = `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PW} ${PH}] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents ${k} 0 R >>`;
       objs[k] = `<< /Length ${c.length} >>\nstream\n${c}\nendstream`; });
     objs[2] = `<< /Type /Pages /Kids [${kids.join(' ')}] /Count ${pages.length} >>`;
-    objs.push(`<< /Title ${pstr(win(doc.title))} /Producer (Log Master) >>`); const info = objs.length - 1;
+    objs.push(`<< /Title ${pstr(win(doc.title))} /Producer (Tool Shelf) >>`); const info = objs.length - 1;
     let out = '%PDF-1.4\n%\xe2\xe3\xcf\xd3\n'; const off = [];
     for (let i = 1; i < objs.length; i++) { off[i] = out.length; out += `${i} 0 obj\n${objs[i]}\nendobj\n`; }
     const xref = out.length;
@@ -62,7 +62,7 @@
   function currentView() {
     const cols = SheetUI.visCols(), rs = SheetUI.wantRows(), q = (document.getElementById('q') || {}).value || '', f = SheetUI.chipsSummary();
     const meta = `Shared ${new Date().toLocaleString()} · Search: ${q.trim() || '(none)'} · Filters: ${f.join(', ') || '(none)'} · ${rs.length.toLocaleString()} rows${SheetUI.state.sel.size ? ' (selected)' : ''}`;
-    return { title: "Log Master", meta, headers: cols.map(c => c.label),
+    return { title: "Tool Shelf", meta, headers: cols.map(c => c.label),
       rows: rs.map(r => cols.map(c => (c === cols[0] && Fixes.needsReview(r) ? '\u2022 ' : '') + SheetUI.displayVal(r, c))) };
   }
   // send it: Web Share with the PDF file, else download. Runs synchronously up to navigator.share so the tap still counts.

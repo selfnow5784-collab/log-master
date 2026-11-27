@@ -1,6 +1,6 @@
 {
-  "name": "Log Master",
-  "short_name": "Log Master",
+  "name": "Tool Shelf",
+  "short_name": "Tool Shelf",
   "description": "Offline inventory reference and in-stock lookup",
   "start_url": "./",
   "scope": "./",

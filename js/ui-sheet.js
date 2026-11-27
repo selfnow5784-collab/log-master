@@ -132,7 +132,7 @@
   function printView(list) {
     const cols = visCols(), rs = list || wantRows(), q = $('#q').value.trim(), f = chipsSummary();
     const doIt = () => {
-      $('#printArea').innerHTML = `<h1>Log Master</h1><p class="pmeta">Printed ${esc(new Date().toLocaleString())} · Search: ${esc(q || '(none)')} · Filters: ${esc(f.join(', ') || '(none)')} · ${rs.length.toLocaleString()} rows</p>
+      $('#printArea').innerHTML = `<h1>Tool Shelf</h1><p class="pmeta">Printed ${esc(new Date().toLocaleString())} · Search: ${esc(q || '(none)')} · Filters: ${esc(f.join(', ') || '(none)')} · ${rs.length.toLocaleString()} rows</p>
         <table><thead><tr>${cols.map(c => `<th>${esc(c.label)}</th>`).join('')}</tr></thead><tbody>${rs.map(r => `<tr>${cols.map(c => `<td>${c === cols[0] && Fixes.needsReview(r) ? '• ' : ''}${esc(displayVal(r, c))}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
       document.body.dataset.printed = rs.length; window.print(); };
     if (rs.length > 1000) return U.dialog('Print ' + rs.length.toLocaleString() + ' rows?', '<p>That is a lot of pages. Search or filter first to print less.</p>', [{ label: 'Cancel', value: false }, { label: 'Print anyway', value: true }]).then(ok => ok && doIt());
