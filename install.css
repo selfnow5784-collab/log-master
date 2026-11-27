@@ -1,0 +1,40 @@
+/* install.css — Install Tool Dude button and iOS guide. No motion. */
+#tdInstallRoot { margin: 0; }
+.td-install,
+.td-ios-guide {
+  margin: .45rem .5rem;
+  padding: .55rem .65rem;
+  background: var(--card);
+  color: var(--fg);
+  border: 1px solid var(--line);
+  border-radius: .5rem;
+}
+.td-install.td-install-focus,
+.td-ios-guide.td-install-focus { border-color: var(--teal); }
+.td-install[hidden],
+.td-ios-guide[hidden],
+.td-install-note[hidden],
+.td-install-btn[hidden],
+.td-install-close[hidden] { display: none !important; }
+.td-install-row { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+.td-install-btn {
+  background: var(--teal);
+  color: #000;
+  border: 1px solid var(--teal);
+  font-weight: 700;
+  flex: 1 1 10rem;
+}
+.td-install-close {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  font-weight: 600;
+  min-height: 2.5rem;
+}
+.td-install-note,
+.td-ios-guide p,
+.td-ios-guide li { margin: .25rem 0; font-size: .95rem; }
+.td-ios-title { font-weight: 700; margin: 0 0 .25rem; }
+.td-ios-guide ol { margin: .2rem 0 .45rem 1.15rem; padding: 0; }
+.td-ios-guide li { margin: .2rem 0; }
+.td-share-icon { display: inline-block; vertical-align: -2px; margin: 0 .1rem; }
