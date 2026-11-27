@@ -200,7 +200,7 @@
     let text = CSV.unparse(rows.map(r => toCsvRow(r, file)), headers);
     const meta = file && file.meta ? Object.entries(file.meta) : [];
     if (meta.length) text = '\uFEFF' + meta.map(([k, v]) => '# ' + k + ': ' + v).join('\r\n') + '\r\n' + text.replace(/^\uFEFF/, '');
-    return { text, rows: rows.length, name: (file && file.name) || ('logmaster-catalog-' + U.stamp() + '.csv') };
+    return { text, rows: rows.length, name: (file && file.name) || ('tool-dude-catalog-' + U.stamp() + '.csv') };
   }
   function exportClean(suffix) {
     const c = catalogCsv(); if (!c.rows) return 0;

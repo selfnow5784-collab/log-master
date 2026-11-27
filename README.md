@@ -1,6 +1,6 @@
-# Tool Shelf
+# Tool Dude
 
-Tool Shelf is an offline catalog and inventory reference app. It runs in a web browser and can be installed on a phone or computer. Your catalog data stays on that device and works without the internet.
+Tool Dude is an offline catalog and inventory reference app. It runs in a web browser and can be installed on a phone or computer. Your catalog data stays on that device and works without the internet.
 
 The live app is at:
 https://selfnow5784-collab.github.io/log-master/
@@ -13,7 +13,7 @@ https://github.com/selfnow5784-collab/log-master
 ## How to update the app
 
 1. Open the repository: https://github.com/selfnow5784-collab/log-master
-2. If you changed any app file, open `sw.js` and bump the `VERSION` value. It is currently `lm-v1.4.3`. Change it each time (for example to `lm-v1.4`) so phones and computers pick up the new files.
+2. If you changed any app file, open `sw.js` and bump the `VERSION` value. It is currently `lm-v1.4.4`. Change it each time (for example to `lm-v1.4`) so phones and computers pick up the new files.
 3. Click **Add file**, then **Upload files**.
 4. Choose the files you want to replace, then commit the upload.
 5. Wait a minute or two for GitHub Pages to update, then check the live app.

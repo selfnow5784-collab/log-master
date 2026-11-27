@@ -17,7 +17,7 @@
         return `<tr>${cols.map(k => cell(f, r, k)).join('')}<td class="${f.confirmed ? 'okc' : ''}">${esc(st)}</td><td><button data-undo="${esc(f.cid)}" title="Undo this fix">Undo</button></td></tr>`; }).join('') + '</tbody></table></div>';
   }
   function body() { return `<p class="fixnote">${esc(NOTE)}</p><p class="note">${Fixes.count().toLocaleString()} item(s). Highlighted = changed by you.</p><div id="fixTable">${table()}</div>`; }
-  const exportCsv = () => { U.download(Fixes.toCSV(), 'logmaster-my-fixes-' + U.stamp() + '.csv'); document.body.dataset.fixExported = '1'; };
+  const exportCsv = () => { U.download(Fixes.toCSV(), 'tool-dude-my-fixes-' + U.stamp() + '.csv'); document.body.dataset.fixExported = '1'; };
   async function open() {
     const d = $('#dlg'); const p = U.dialog('My Fixes', body(), [{ label: 'Export CSV', cls: 'primary', keepOpen: true, value: () => { exportCsv(); return false; } }, { label: 'Close', value: true }]);
     d.classList.add('wide');

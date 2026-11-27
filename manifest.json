@@ -1,6 +1,6 @@
 {
-  "name": "Tool Shelf",
-  "short_name": "Tool Shelf",
+  "name": "Tool Dude",
+  "short_name": "Tool Dude",
   "description": "Offline inventory reference and in-stock lookup",
   "start_url": "./",
   "scope": "./",
