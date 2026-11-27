@@ -3,17 +3,17 @@
 Tool Dude is an offline catalog and inventory reference app. It runs in a web browser and can be installed on a phone or computer. Your catalog data stays on that device and works without the internet.
 
 The live app is at:
-https://selfnow5784-collab.github.io/log-master/
+https://selfnow5784-collab.github.io/tool-dude/
 
 ## How it is hosted
 
 The app is hosted for free on GitHub Pages. GitHub serves the files from the root of the `main` branch in this repository:
-https://github.com/selfnow5784-collab/log-master
+https://github.com/selfnow5784-collab/tool-dude
 
 ## How to update the app
 
-1. Open the repository: https://github.com/selfnow5784-collab/log-master
-2. If you changed any app file, open `sw.js` and bump the `VERSION` value. It is currently `td-v1.5.0`. Change it each time (for example to `td-v1.5.1`) so phones and computers pick up the new files.
+1. Open the repository: https://github.com/selfnow5784-collab/tool-dude
+2. If you changed any app file, open `sw.js` and bump the `VERSION` value. It is currently `td-v1.5.1`. Change it each time (for example to `td-v1.5.2`) so phones and computers pick up the new files.
 3. Click **Add file**, then **Upload files**.
 4. Choose the files you want to replace, then commit the upload.
 5. Wait a minute or two for GitHub Pages to update, then check the live app.
@@ -39,7 +39,7 @@ If the app asks **What is this file?**, choose the kind of file (for example **R
 ## How to download a backup of the code
 
 Download a zip of the current code (no catalog data) from:
-https://github.com/selfnow5784-collab/log-master/archive/refs/heads/main.zip
+https://github.com/selfnow5784-collab/tool-dude/archive/refs/heads/main.zip
 
 ## How to host it somewhere else
 
